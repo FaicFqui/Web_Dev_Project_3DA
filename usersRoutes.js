@@ -1,16 +1,21 @@
 const express = require('express');
 const router = express.Router();
-//const usersController = require('./usersControllers');
+const controller = require('./Controller.js');
 
 
+// Lire tous les utilisateurs
+router.get('/', controller.getAllUsers);
 
-const usersController = require('./usersControllers');
+// Lire un utilisateur spécifique
+router.get('/:id', controller.getUserById);
 
-// Routes pour les utilisateurs
-router.get('/', usersController.getAllUsers); // Lire tous les utilisateurs
-router.get('/:id', usersController.getUserById); // Lire un utilisateur spécifique
-router.post('/', usersController.createUser); // Créer un nouvel utilisateur
-router.put('/:id', usersController.updateUser); // Mise à jour complète d'un utilisateur
-router.delete('/:id', usersController.deleteUser); // Supprimer un utilisateur
+// Créer un nouvel utilisateur
+router.post('/', controller.createUser);
+
+// Mettre à jour un utilisateur
+router.put('/:id', controller.updateUser);
+
+// Supprimer un utilisateur
+router.delete('/:id', controller.deleteUser);
 
 module.exports = router;
