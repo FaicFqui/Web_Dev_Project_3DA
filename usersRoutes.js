@@ -2,18 +2,18 @@ const express = require('express');
 const router = express.Router();
 //const usersController = require('./usersControllers');
 
-const users = [
-	{ id: 1, firstName: "John", lastName: "Doe", role: "admin" },
-	{ id: 2, firstName: "Jane", lastName: "Smith", role: "user" },
-	{ id: 3, firstName: "Alice", lastName: "Johnson", role: "moderator" },
-	{ id: 4, firstName: "Bob", lastName: "Brown", role: "user" },
-	{ id: 5, firstName: "Charlie", lastName: "Davis", role: "admin" },
-]
+const db = require("./database")
 
 // Routes pour les utilisateurs
 // Lire tous les utilisateurs
 router.get('/', (req, res) => {
-	res.json(users)}); 
+	db.all('SELECT * FROM users', [], (err, rows) => {
+        if (err) {
+          res.status(500).json({ error: err.message });
+        } else {
+          res.json(rows);
+        }
+      });}); 
 
 // Lire un utilisateur spécifique
 router.get('/:id', (req, res) => {
