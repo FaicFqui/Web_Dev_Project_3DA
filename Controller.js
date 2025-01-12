@@ -1,15 +1,22 @@
 const db = require('./database');  // Connexion à la base de données SQLite
+ 
+// regex pour alphanumérique seulement
+ function isAlphanumeric(str) {
+  const regex = /^[a-zA-Z0-9]+$/
+  return regex.test(str)
+}
+
 
 // Lire tous les utilisateurs
-exports.getAllUsers = (req, res) => {
+exports.getAllUsers = function (req, res){
   db.all('SELECT * FROM users', [], (err, rows) => {
     if (err) {
       res.status(500).json({ error: err.message });
     } else {
       res.json(rows);
     }
-  });
-};
+  })
+}
 
 // Lire un utilisateur spécifique
 exports.getUserById = (req, res) => {
@@ -30,8 +37,14 @@ exports.getUserById = (req, res) => {
 exports.createUser = (req, res) => {
   const { firstName, lastName } = req.body;
 
+ 
+
   if (!firstName || !lastName) {
     return res.status(400).json({ msg: "Les champs 'firstName' et 'lastName' sont requis" });
+  }
+
+  if (!isAlphanumeric(firstName) || !isAlphanumeric(lastName)) {
+    return res.status(400).json({ msg: "Les champs 'firstName' et 'lastName' doivent être alphanumériques" });
   }
 
   const sql = 'INSERT INTO users (firstName, lastName) VALUES (?, ?)';
@@ -51,6 +64,14 @@ exports.createUser = (req, res) => {
 exports.updateUser = (req, res) => {
   const { firstName, lastName } = req.body;
   const id = parseInt(req.params.id);
+
+  if (!firstName || !lastName) {
+    return res.status(400).json({ msg: "Les champs 'firstName' et 'lastName' sont requis" });
+  }
+
+  if (!isAlphanumeric(firstName) || !isAlphanumeric(lastName)) {
+    return res.status(400).json({ msg: "Les champs 'firstName' et 'lastName' doivent être alphanumériques" });
+  }
 
   const sql = 'UPDATE users SET firstName = ?, lastName = ? WHERE id = ?';
   db.run(sql, [firstName, lastName, id], function (err) {
