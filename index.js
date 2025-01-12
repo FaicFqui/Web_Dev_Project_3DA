@@ -16,6 +16,20 @@ app.get("/", (req, res) => {
 	res.json(users)
 })
 
+// Get un utilisateur
+app.get("/:id", (req, res) => {
+	const id = parseInt(req.params.id)
+
+	// trouve son index, verifier si le userIndex est positive
+	const userIndex = users.findIndex((user) => user.id === id)
+
+	// utilisateur non trouvé
+	if (userIndex < 0)
+		return res.status(404).json({ msg: "utilisateur non trouvé" })
+    // si el est trouvé
+	res.json(users[userIndex])
+})
+
 // POST : CRÉER un nouvel utilisateur, basé sur les données passées dans le corps(body) de la requête
 app.post("/", (req, res) => {
 	// récupérer toutes les données qui arrivent dans le corps de la requête (body)
@@ -37,6 +51,40 @@ app.post("/", (req, res) => {
 	users.push(newUser)
 	// envoyer le code de statut 201 (créé) et les données du nouvel utilisateur afin de confirmer au client.
 	res.status(201).json(newUser)
+})
+
+app.put("/:id", (req, res) => {
+    const { firstName, lastName } = req.body
+    const id = parseInt(req.params.id)
+    // trouve son index, verifier si le userIndex est positive
+	const userIndex = users.findIndex((user) => user.id === id)
+
+    if (userIndex < 0)
+		return res.status(404).json({ msg: "utilisateur non trouvé" })
+    if (firstName) users[userIndex].firstName = firstName
+	if (lastName) users[userIndex].lastName = lastName
+
+    res.json({
+		msg: "utilisateur mis à jour",
+		user: users[userIndex],
+	})
+
+})
+
+app.delete("/:id", (req, res) => {
+    const id = parseInt(req.params.id)
+    // trouve son index, verifier si le userIndex est positive
+	const userIndex = users.findIndex((user) => user.id === id)
+
+	// utilisateur non trouvé
+	if (userIndex < 0)
+		return res.status(404).json({ msg: "utilisateur non trouvé" })
+    // si el est trouvé
+	users.splice(userIndex, 1)
+
+	res.json({
+		msg: "utilisateur suprimée",
+	})
 })
 
 app.listen(port, () => {
